@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# README
+# Introduction
 
 Let's discover **srLampi projects in 5 minutes**.
 
