@@ -61,7 +61,7 @@ project-root/
 └── package.json
 ```
 ### Methodology
-- **Development apporach**
+- **Development approach**
   - Most Projects follow the SCRUM Method
 - **Version Control** 
   - Most Projects follow the git Branching strategy

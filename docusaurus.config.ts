@@ -102,9 +102,13 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Introduction',
               to: '/docs/intro',
             },
+            {
+              label:'mySql - works',
+              to:'/docs/category/mysql---works'
+            }
           ],
         },
         {
