@@ -1,43 +1,17 @@
 # documentation
 Documentation using Docusaurus 
+
 # Website
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.  
 
-## Installation
+click [here](https://srlampidocs.web.app/) to see my documentation page.
 
-```bash
-yarn
-```
+## Information
+This documentation is a complement to the information found in my portfolio from all my projects.  
+The projects that are present both inside my portfolio and here, have a clear distinction:
+- Docusaurus manages technical information in the projects, there you find what the project is, what is made from, how to use it and ilustrative information.
+- Portfolio manages more hands in code information, it expands on the folder structure and names from components, it has an overview in the project and screenshots from the actual code.
 
-## Local Development
-
-```bash
-yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
-
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+### docusaurus
+- Some information in my docusaurus documentation page corresponds not to projects but assigments and small activities to get familiarized with the technologies.
