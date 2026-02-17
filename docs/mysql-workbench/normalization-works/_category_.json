@@ -1,0 +1,8 @@
+{
+  "label": "Normalization works",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "These works contains normalization from entities in databases."
+  }
+}
