@@ -1,0 +1,17 @@
+# Level two
+## overview
+Fundamentals, multiple conditions  
+The following are DQL (Data Query Comamands):
+### Important
+All instructions are based on a unique database context.
+## Contents
+|objective|SQL|result|description|
+|----|-----|-------|----|
+|list all 'employee' users older than 25 years|```SELECT * FROM users u WHERE u.birth_date < '2001-01-01' AND role = 'employee';```|![employee_25y_users](../assets/placeholder.jpg)|The command creates an alias for the entity users (u) and selects all records where birth_date is earlier than '2001-01-01' (which corresponds to users older than 25 years if the current year is 2026) and where the role attribute is equal to 'employee'.|
+|show active users with document type 'CC'|```SELECT * FROM users u WHERE u.document_type = 'CC' AND u.is_active = '1';```|![active_cc_users](../assets/placeholder.jpg)|The command creates an alias for the entity users and retrieves all users whose document_type is 'CC' and whose is_active attribute equals '1'. The result depends on how the system defines active users.|
+|list adult users without employment|```SELECT * FROM users u WHERE u.birth_date < '2008-01-01' AND u.company IS NULL;```|![adult_unemployed_users](../assets/placeholder.jpg)|The command selects users whose birth_date is earlier than '2008-01-01' (meaning they are 18 years or older if the current year is 2026) and whose company attribute is NULL, indicating they do not have a registered employer.|
+|show employed users with monthly income greater than 3,000,000|```SELECT * FROM users u WHERE u.company IS NOT NULL AND u.monthly_income > '3000000';```|![high_income_users](../assets/placeholder.jpg)|The command retrieves users who have a registered company (company IS NOT NULL) and whose monthly_income is greater than 3,000,000. This filters users with employment and high income.|
+|list married users with at least one child|```SELECT * FROM users u WHERE u.marital_status = 'Casado' AND u.children_count >= '1';```|![married_with_children_users](../assets/placeholder.jpg)|The command selects users whose marital_status is 'Casado' and whose children_count is greater than or equal to 1, meaning married users with at least one child.|
+|list users between 30 and 40 years old (method 1)|```SELECT * FROM users u WHERE u.birth_date < '1996-01-01' AND u.birth_date > '1986-01-01';```|![users_30_40_method1](../assets/placeholder.jpg)|The command retrieves users whose birth_date is between '1986-01-01' and '1996-01-01' using comparison operators. This corresponds to users between 30 and 40 years old if the current year is 2026.|
+|list users between 30 and 40 years old (method 2 - BETWEEN)|```SELECT * FROM users u WHERE u.birth_date BETWEEN '1986-01-01' AND '1996-01-01';```|![users_30_40_method2](../assets/placeholder.jpg)|The command retrieves users whose birth_date falls between '1986-01-01' and '1996-01-01' using the BETWEEN operator. This is a cleaner and more readable alternative to multiple comparison operators.|
+|list verified 'admin' users older than 25 years|```SELECT * FROM users u WHERE (u.birth_date < '2001-12-31' AND role = 'admin') AND (is_active = 1);```|![admin_verified_25y_users](../assets/placeholder.jpg)|The command selects users whose birth_date is earlier than '2001-12-31' (older than 25 years if the current year is 2026), whose role is 'admin', and whose is_active attribute equals 1, meaning verified or active administrators.|
