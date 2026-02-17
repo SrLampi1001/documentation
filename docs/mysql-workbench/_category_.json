@@ -1,0 +1,8 @@
+{
+  "label": "mySQL - works",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "These works correspond to the 4th module in Riwi, creating and understanding databases using mySQL."
+  }
+}
