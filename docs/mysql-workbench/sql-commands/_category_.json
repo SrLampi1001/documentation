@@ -1,0 +1,8 @@
+{
+  "label": "SQL commands",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "These page is composed of 4 levels, each level contains a set of SQL commands and the difficulty level goes up each level."
+  }
+}
