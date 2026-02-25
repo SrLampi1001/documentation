@@ -17,7 +17,7 @@ Although not all the database schema is included, from the queries it's only nee
 | `order_items` | `order_id`, `product_id`, `quantity`, `price_at_purchase` |
 
 > A relationship typical of a relational system: users → orders → items → products → categories.
-
+### [GitHub Repository](https://github.com/SrLampi1001/express_mysql)
 ---
 
 ## Express Structure
@@ -168,11 +168,6 @@ The most advanced level, focused on strategic decision-making through deep analy
 
 ## Instalation and Set Up
 
-1. **Create the schema first**: Define the suggested tables and populate with test data.
-2. **Use MySQL/PostgreSQL**: Both support all necessary functionalities.
-3. **Go level by level**: Don't skip ahead without mastering previous levels.
-4. **Optimize queries**: After solving, think about how to improve performance (indexes, avoid unnecessary subqueries).
-5. **Automate reports**: Imagine how to convert each query into a dashboard.
 
 ---
 
