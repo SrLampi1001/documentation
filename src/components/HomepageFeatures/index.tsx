@@ -1,50 +1,57 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
+import useBaseUrl from '@docusaurus/useBaseUrl'; 
 import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  image: string; // Change from Svg component to image path string
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to understand',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Structured Documentation',
+    image: '/img/mountain_minecraft.png', // Path from static folder
     description: (
       <>
-        All the documentation follows the same rules and structure, it&apos;s easy to find what you are looking for and understand it, no matter the project
+        All documentation and code follow clear, common rules and structure. Find what you need quickly and understand it, no matter the project scope.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'My code Portfolio',
+    image: '/img/computer_minecraft.png',
     description: (
       <>
-        This documentation is complementary to the one found inside my Portfolio WebPage. <br></br>
-        Go ahead and explore my projects, you&apos;ll find the most relevant and to the chase information.
+        Get complementary insights to the ones on my main portfolio.
+        Dive deep into the details and technical requirements for projects in Python, Node.js, and MySQL.
       </>
     ),
   },
   {
-    title: 'Powered Docusaurus',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Crafted from Scratch',
+    image: '/img/working_minecraft.png',
     description: (
       <>
-        This site is created with Docusaurus, using react
+        This site is created with Docusaurus, using react to house my technical specs. It showcases my stack including HTML, CSS, Javascript, and more.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, image, description}: FeatureItem) {
+  const imageUrl = useBaseUrl(image); // Get the correct URL with base path
+  
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img 
+          src={imageUrl} 
+          className={styles.featureSvg} // You can keep this class or rename it
+          alt={title} 
+        />
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
