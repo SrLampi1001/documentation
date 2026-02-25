@@ -167,8 +167,278 @@ The most advanced level, focused on strategic decision-making through deep analy
 ---
 
 ## Instalation and Set Up
+### Clone reposirtory
+```bash
+git clone https://github.com/SrLampi1001/express_mysql.git
+```
+### Install dependencies (inside cloned repository)
 
+```bash
+npm install
+```
+
+### Create a `.env` file
+
+Create a `.env` file in the project root (it is ignored by git):
+
+```env
+# Server
+PORT=3000
+
+# MySQL connection (used by config/db.js)
+IP=127.0.0.1
+USER=root
+PASSWORD=your_password
+DB_NAME=your_database
+```
+
+> Note: This project uses env var names `IP`, `USER`, `PASSWORD`, `DB_NAME` as written in `config/db.js`.
+> If you prefer more standard names like `DB_HOST`, `DB_USER`, etc., update `config/db.js` accordingly.
+### (Optional) Create the schemas and example data
+```sql
+--  You can copy-paste this into MySQL (e.g., via MySQL Workbench, CLI, or your migration tool).
+--
+-- 1) Drop tables if they exist (for clean re-runs)
+--
+DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
+--
+-- 2) Create tables
+--
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    city VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    category_id INT NOT NULL,
+    sale_price DECIMAL(10,2) NOT NULL,
+    purchase_price DECIMAL(10,2) NOT NULL,
+    stock INT DEFAULT 0,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_number VARCHAR(50) NOT NULL UNIQUE,
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
+    total DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE order_product (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL CHECK (quantity > 0),
+    price_at_purchase DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+--
+-- 3) Insert sample data
+--
+
+-- Users (include some from Monterrey and other cities; include emails used in examples)
+INSERT INTO users (name, last_name, email, city) VALUES
+('Ivan', 'Amador', 'ivan.amador@hotmail.es', 'Monterrey'),
+('Diego', 'Martinez', 'diego.martinez@example.com', 'Monterrey'),
+('Isamel', 'Pedrito', 'isamel@pedrito.es', 'O Delgadillo'),
+('Maria', 'Gomez', 'maria.gomez@example.com', 'Monterrey'),
+('Luis', 'Hernandez', 'luis.hernandez@example.com', 'Guadalajara'),
+('Ana', 'Perez', 'ana.perez@example.com', 'Mexico City'),
+('Carlos', 'Ruiz', 'carlos.ruiz@example.com', 'Monterrey'),
+('Sofia', 'Torres', 'sofia.torres@example.com', 'Guadalajara');
+
+-- Categories (ensure "Electrónica" exists if you want queries to return rows for it; we’ll use Spanish names as in your examples)
+INSERT INTO categories (name) VALUES
+('Electrónica'),
+('Ropa y Moda'),
+('Hogar y Electrodomésticos'),
+('Consolas y Videojuegos'),
+('Deportes'),
+('Libros'),
+('Juguetes');
+
+-- Products (include some with "Gamer" in the name, various prices, and stock levels)
+INSERT INTO products (name, category_id, sale_price, purchase_price, stock) VALUES
+-- Electrónica
+('Smartphone Gamer X', 1, 899.99, 600.00, 10),
+('Laptop Pro', 1, 1499.99, 1100.00, 4),     -- low stock
+('Auriculares Bluetooth', 1, 129.99, 80.00, 25),
+-- Ropa y Moda
+('Camisa Casual', 2, 39.99, 20.00, 50),
+('Jeans Slim', 2, 59.99, 35.00, 40),
+-- Hogar y Electrodomésticos
+('Aspiradora Smart', 3, 199.99, 120.00, 8),
+('Licuadora Pro', 3, 89.99, 50.00, 15),
+-- Consolas y Videojuegos
+('Consola Gamer Z', 4, 499.99, 350.00, 6),
+('Videojuego Aventura', 4, 59.99, 40.00, 30),
+-- Deportes
+('Bicicleta MTB', 5, 799.99, 550.00, 5),
+('Pelota Fútbol', 5, 24.99, 15.00, 100),
+-- Libros
+('SQL Avanzado', 6, 44.99, 25.00, 20),
+('Novela Corta', 6, 14.99, 8.00, 60),
+-- Juguetes
+('Muñeco Voluptatibus Vitae Ut', 7, 19.99, 10.00, 22); -- matches query #30 name example
+
+-- Orders (create a spread of dates, statuses, and totals)
+INSERT INTO orders (user_id, order_number, order_date, status, total) VALUES
+-- Ivan Amador (id=1)
+(1, 'ORD-2026-NF01MD', '2024-01-15 10:23:00', 'delivered', 1029.98),
+(1, 'ORD-2024-AB12XZ', '2024-06-10 14:05:00', 'delivered', 129.99),
+-- Diego Martinez (id=2)
+(2, 'ORD-2024-CD34YZ', '2024-02-20 09:00:00', 'delivered', 59.99),
+(2, 'ORD-2023-OLD99', '2023-05-05 12:00:00', 'delivered', 499.99),
+-- Isamel Pedrito (id=3)
+(3, 'ORD-2024-EF56WX', '2024-03-01 16:45:00', 'cancelled', 199.99),
+-- Maria Gomez (id=4)
+(4, 'ORD-2024-GH78QR', '2024-07-01 11:20:00', 'pending', 89.99),
+-- Luis Hernandez (id=5) — no orders initially, to test "no orders" query
+-- Ana Perez (id=6)
+(6, 'ORD-2023-DEC01', '2023-12-01 08:00:00', 'delivered', 1499.99),
+(6, 'ORD-2024-JAN02', '2024-01-02 09:30:00', 'delivered', 44.99),
+-- Carlos Ruiz (id=7)
+(7, 'ORD-2024-FEB03', '2024-02-03 10:10:00', 'shipped', 799.99),
+-- Sofia Torres (id=8)
+(8, 'ORD-2022-OLD01', '2022-03-10 10:00:00', 'delivered', 24.99); -- old purchase for churn analysis
+
+-- Order items (order_product)
+-- ORD-2026-NF01MD (user 1): Smartphone Gamer X + Auriculares Bluetooth
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(1, 1, 1, 899.99),
+(1, 3, 1, 129.99);
+
+-- ORD-2024-AB12XZ (user 1): Auriculares Bluetooth only
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(2, 3, 1, 129.99);
+
+-- ORD-2024-CD34YZ (user 2): Jeans Slim
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(3, 5, 1, 59.99);
+
+-- ORD-2023-OLD99 (user 2): Consola Gamer Z
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(4, 8, 1, 499.99);
+
+-- ORD-2024-EF56WX (user 3): Aspiradora Smart (cancelled order)
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(5, 6, 1, 199.99);
+
+-- ORD-2024-GH78QR (user 4): Licuadora Pro (pending, low-stock category not triggered here)
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(6, 7, 1, 89.99);
+
+-- ORD-2023-DEC01 (user 6): Laptop Pro (high value)
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(7, 2, 1, 1499.99);
+
+-- ORD-2024-JAN02 (user 6): SQL Avanzado book
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(8, 11, 1, 44.99);
+
+-- ORD-2024-FEB03 (user 7): Bicicleta MTB
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(9, 10, 1, 799.99);
+
+-- ORD-2022-OLD01 (user 8): Pelota Fútbol (old purchase to simulate churn)
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(10, 12, 1, 24.99);
+
+-- Additional items to create richer basket analysis and revenue distribution
+-- Add another order for user 1 with multiple products to increase variety
+INSERT INTO orders (user_id, order_number, order_date, status, total) VALUES
+(1, 'ORD-2024-MIX01', '2024-05-01 12:00:00', 'delivered', 659.97);
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(11, 1, 1, 899.99),      -- Smartphone Gamer X (we'll adjust total to match sum)
+(11, 5, 1, 59.99),
+(11, 11, 2, 44.99);
+
+-- Adjust total for order 11 to match inserted items (899.99+59.99+89.98=1049.96)
+UPDATE orders SET total = 1049.96 WHERE id = 11;
+
+-- Ensure pending order includes a low-stock product (Laptop Pro has stock=4 < 5)
+-- We already have order 6 (GH78QR) pending with Licuadora (stock 15). Let's add Laptop to a pending order.
+INSERT INTO orders (user_id, order_number, order_date, status, total) VALUES
+(4, 'ORD-2024-LOWSTOCK', '2024-07-10 09:00:00', 'pending', 1499.99);
+INSERT INTO order_product (order_id, product_id, quantity, price_at_purchase) VALUES
+(12, 2, 1, 1499.99);
+
+-- Update totals for any mismatched orders (if needed)
+UPDATE orders o
+JOIN (
+    SELECT order_id, SUM(price_at_purchase * quantity) AS computed_total
+    FROM order_product
+    GROUP BY order_id
+) src ON o.id = src.order_id
+SET o.total = src.computed_total
+WHERE o.id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+
+--
+-- 4) Optional: Add indexes for performance (helpful for joins and filters)
+--
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_order_product_order_id ON order_product(order_id);
+CREATE INDEX idx_order_product_product_id ON order_product(product_id);
+CREATE INDEX idx_products_category_id ON products(category_id);
+CREATE INDEX idx_users_city ON users(city);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_order_date ON orders(order_date);
+
+--
+-- 5) Verify sample counts (you can run these after loading)
+--
+-- SELECT COUNT(*) FROM users;        -- expect 8
+-- SELECT COUNT(*) FROM orders;       -- expect 12
+-- SELECT COUNT(*) FROM order_product;-- expect 14 line items
+-- SELECT * FROM users WHERE city = 'Monterrey';
+-- SELECT * FROM orders WHERE status = 'pending';
+```
+### Ensure MySQL is running
+
+- Start your MySQL server
+- Create the database you reference in `DB_NAME`
+- Ensure the user/password has access
+
+## Run the server
+
+```bash
+node server.js
+```
+
+You should see:
+
+```
+Server running on port 3000
+```
+
+Base URL (default):  
+`http://localhost:3000`
 
 ---
-
+## References
+- [Assignment Link: Riwi](https://gist.github.com/andrescortesdev/85d96f121b02813aabce686664459b63)
+- [Repository Link](https://github.com/SrLampi1001/express_mysql)
+- This documentation was created with the help of ChatGPT 5.2
 --- 
