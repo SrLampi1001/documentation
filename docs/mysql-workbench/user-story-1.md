@@ -1,3 +1,6 @@
+---
+sidebar_position: 3
+---
 # User Story 1
 ## [Github Repository](https://github.com/SrLampi1001/historia_usuario_1_m4)
 ## Overview:
