@@ -1,0 +1,8 @@
+{
+  "label": "Node.js - mongodb",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "These page is composed of works on mongoDB using the mongodb library, along with others libraries like dotenv."
+  }
+}
